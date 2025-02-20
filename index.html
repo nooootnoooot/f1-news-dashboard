@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F1 News Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,10 +15,11 @@
         html, body {
             height: 100%;
             width: 100%;
-            font-family: 'Montserrat', Arial, sans-serif;
+            font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
             line-height: 1.6;
             overflow: hidden;
             transition: background 0.3s, color 0.3s;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff0000" d="M12 2L2 22h20L12 2z"/></svg>') 12 12, auto;
         }
 
         /* Themes */
@@ -32,7 +34,7 @@
         }
 
         header {
-            background: #ff0000;
+            background: linear-gradient(90deg, #ff0000, #cc0000);
             padding: 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -47,7 +49,7 @@
         header h1 {
             font-size: 2em;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             color: #fff;
             animation: fadeInDown 1s ease;
         }
@@ -59,11 +61,12 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.9em;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
 
         #theme-toggle:hover {
             background: #ddd;
+            transform: scale(1.05);
         }
 
         .dashboard {
@@ -110,6 +113,11 @@
             text-transform: uppercase;
             text-align: center;
             animation: fadeIn 1s ease;
+            position: sticky;
+            top: 0;
+            background: inherit;
+            padding: 5px 0;
+            z-index: 5;
         }
 
         /* News Section */
@@ -120,6 +128,23 @@
             margin-bottom: 15px;
         }
 
+        #news-search {
+            padding: 8px;
+            border: none;
+            border-radius: 20px;
+            width: 200px;
+            font-size: 0.9em;
+            transition: width 0.3s;
+        }
+
+        #news-search:focus {
+            width: 250px;
+            outline: none;
+        }
+
+        .dark-theme #news-search { background: #4a4a4a; color: #e0e0e0; }
+        .light-theme #news-search { background: #f5f5f5; color: #1a1a1a; }
+
         .news-controls button {
             background: #ff0000;
             color: #fff;
@@ -127,11 +152,12 @@
             padding: 8px 15px;
             border-radius: 20px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
 
         .news-controls button:hover {
             background: #cc0000;
+            transform: scale(1.05);
         }
 
         .news-grid {
@@ -143,7 +169,7 @@
         .news-item {
             padding: 15px;
             border-radius: 8px;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .dark-theme .news-item { background: #4a4a4a; color: #e0e0e0; }
@@ -151,6 +177,7 @@
 
         .news-item:hover {
             transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .news-item h3 {
@@ -175,11 +202,12 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .race:hover {
             transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .race::before {
@@ -411,6 +439,8 @@
             header { height: 60px; }
             section { min-width: 100%; }
             .news-controls { flex-wrap: wrap; }
+            #news-search { width: 150px; }
+            #news-search:focus { width: 200px; }
         }
     </style>
 </head>
@@ -425,6 +455,7 @@
             <section id="news">
                 <h2>Latest News</h2>
                 <div class="news-controls">
+                    <input type="text" id="news-search" placeholder="Search news...">
                     <button onclick="filterNews('all')">All</button>
                     <button onclick="filterNews('results')">Race Results</button>
                     <button onclick="filterNews('transfers')">Transfers</button>
@@ -616,7 +647,7 @@
             <!-- Social Media Feed Section -->
             <section id="social-feed">
                 <h2>F1 Social Feed</h2>
-                <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/F1?ref_src=twsrc%5Etfw">Tweets by F1</a>
+                <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/F1?ref_src=twsrc%5Etfw" loading="lazy">Tweets by F1</a>
                 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </section>
         </div>
@@ -658,7 +689,7 @@
             document.querySelector('.twitter-timeline').setAttribute('data-theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
         });
 
-        // Mock Live News Updates with Categories
+        // Mock Live News Updates with Categories and Search
         const newsItems = [
             { title: "McLaren Secures 2024 Constructors' Title", text: "Lando Norris dominated the Abu Dhabi GP, clinching McLaren's first constructors' championship since 1998.", category: "results" },
             { title: "Hamilton Joins Ferrari for 2025", text: "Lewis Hamilton will race for Ferrari in 2025, leaving Mercedes after a stellar career.", category: "transfers" },
@@ -666,11 +697,18 @@
             { title: "F1 75 Live Event Recap", text: "The O2 hosted a spectacular launch for F1's 75th season with all 20 drivers present.", category: "events" }
         ];
         let newsIndex = 0;
+        let currentFilter = 'all';
 
-        function updateNews(filter = 'all') {
+        function updateNews(filter = currentFilter, search = '') {
             const newsGrid = document.getElementById('news-grid');
             newsGrid.innerHTML = '';
-            const filteredNews = filter === 'all' ? newsItems : newsItems.filter(item => item.category === filter);
+            let filteredNews = filter === 'all' ? newsItems : newsItems.filter(item => item.category === filter);
+            if (search) {
+                filteredNews = filteredNews.filter(item => 
+                    item.title.toLowerCase().includes(search.toLowerCase()) || 
+                    item.text.toLowerCase().includes(search.toLowerCase())
+                );
+            }
             for (let i = 0; i < Math.min(3, filteredNews.length); i++) {
                 const item = filteredNews[(newsIndex + i) % filteredNews.length];
                 const div = document.createElement('div');
@@ -682,16 +720,25 @@
         }
 
         function filterNews(category) {
-            newsIndex = 0; // Reset index on filter change
-            updateNews(category);
+            currentFilter = category;
+            newsIndex = 0;
+            updateNews(category, document.getElementById('news-search').value);
         }
+
+        document.getElementById('news-search').addEventListener('input', (e) => {
+            updateNews(currentFilter, e.target.value);
+        });
 
         setInterval(() => updateNews(), 10000);
         updateNews();
 
-        // Race Countdown Timer
+        // Race Countdown Timer with Audio
+        const engineSound = new Audio('https://www.myinstants.com/media/sounds/f1-engine-start.mp3'); // Public domain sound
+        engineSound.volume = 0.3;
+
         function updateCountdowns() {
             const countdowns = document.querySelectorAll('.countdown');
+            let playSound = false;
             countdowns.forEach(countdown => {
                 const raceDate = new Date(countdown.getAttribute('data-date'));
                 const now = new Date();
@@ -699,21 +746,26 @@
 
                 if (diff <= 0) {
                     countdown.textContent = "Race Day!";
-                    return;
+                } else {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    countdown.textContent = `${days}d ${hours}h ${minutes}m`;
+                    if (days === 0 && hours < 24 && !playSound) {
+                        playSound = true;
+                    }
                 }
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                countdown.textContent = `${days}d ${hours}h ${minutes}m`;
             });
+            if (playSound && !engineSound.currentTime) {
+                engineSound.play();
+            }
         }
 
         setInterval(updateCountdowns, 60000);
         updateCountdowns();
 
         // Weather Widget
-        const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY'; // Replace with your API key
+        const apiKey = '25bb84b88cbfd8a2747890e912afc295'; // Replace with your API key
         async function updateWeather() {
             const races = document.querySelectorAll('.race');
             for (const race of races) {
@@ -738,7 +790,7 @@
         }
 
         // Uncomment after adding API key
-        // updateWeather();
+        updateWeather();
 
         // Driver Profile Popups
         const driverData = {
