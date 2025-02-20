@@ -20,17 +20,9 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* Dark Theme (Default) */
-        body.dark-theme {
-            background: #1a1a1a;
-            color: #e0e0e0;
-        }
-
-        /* Light Theme */
-        body.light-theme {
-            background: #f0f0f0;
-            color: #1a1a1a;
-        }
+        /* Themes */
+        body.dark-theme { background: #1a1a1a; color: #e0e0e0; }
+        body.light-theme { background: #f0f0f0; color: #1a1a1a; }
 
         .dashboard-container {
             height: 100vh;
@@ -41,13 +33,15 @@
 
         header {
             background: #ff0000;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             height: 80px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            z-index: 10;
         }
 
         header h1 {
@@ -55,24 +49,31 @@
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #fff;
+            animation: fadeInDown 1s ease;
         }
 
         #theme-toggle {
             background: #fff;
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        #theme-toggle:hover {
+            background: #ddd;
         }
 
         .dashboard {
             flex: 1;
             display: flex;
             flex-direction: row;
-            gap: 10px;
+            gap: 15px;
             overflow-x: auto;
-            padding: 10px;
+            padding: 15px;
+            transition: background 0.3s;
         }
 
         .dark-theme .dashboard { background: #2c2c2c; }
@@ -80,12 +81,13 @@
 
         section {
             border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
             position: relative;
             flex: 1;
-            min-width: 280px;
+            min-width: 300px;
             overflow-y: auto;
+            transition: background 0.3s;
         }
 
         .dark-theme section { background: #3a3a3a; }
@@ -98,24 +100,40 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: repeating-linear-gradient(
-                45deg,
-                #ff0000,
-                #ff0000 10px,
-                #fff 10px,
-                #fff 20px
-            );
+            background: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #fff 10px, #fff 20px);
         }
 
         h2 {
             color: #ff0000;
-            font-size: 1.5em;
-            margin-bottom: 10px;
+            font-size: 1.6em;
+            margin-bottom: 15px;
             text-transform: uppercase;
             text-align: center;
+            animation: fadeIn 1s ease;
         }
 
         /* News Section */
+        .news-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .news-controls button {
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .news-controls button:hover {
+            background: #cc0000;
+        }
+
         .news-grid {
             display: flex;
             flex-direction: column;
@@ -123,15 +141,20 @@
         }
 
         .news-item {
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.2s;
         }
 
         .dark-theme .news-item { background: #4a4a4a; color: #e0e0e0; }
         .light-theme .news-item { background: #f5f5f5; color: #1a1a1a; }
 
+        .news-item:hover {
+            transform: scale(1.02);
+        }
+
         .news-item h3 {
-            font-size: 1em;
+            font-size: 1.1em;
             color: #ff0000;
             margin-bottom: 8px;
         }
@@ -140,19 +163,23 @@
         .calendar {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .race {
             background-size: cover;
             background-position: center;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
             color: #fff;
             text-align: center;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .race:hover {
+            transform: scale(1.02);
         }
 
         .race::before {
@@ -166,7 +193,7 @@
             z-index: 0;
         }
 
-        .race-date, .race p, .race .circuit, .race .countdown, .race .weather {
+        .race-date, .race p, .race .circuit, .race .countdown, .race .weather, .race .map-preview {
             position: relative;
             z-index: 1;
         }
@@ -178,7 +205,7 @@
         }
 
         .circuit {
-            font-size: 0.85em;
+            font-size: 0.9em;
             font-style: italic;
             margin-top: 5px;
         }
@@ -190,33 +217,60 @@
         }
 
         .weather {
-            font-size: 0.8em;
+            font-size: 0.85em;
             color: #00ccff;
             margin-top: 5px;
         }
 
-        /* Flag Backgrounds */
+        .map-preview {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 150px;
+            background-size: cover;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .race:hover .map-preview {
+            display: block;
+        }
+
+        /* Flag Backgrounds and Maps */
         .race.australia { background-image: url('https://flagcdn.com/w320/au.png'); }
+        .race.australia .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Albert_Park_Circuit_2020_%28simplified%29.svg/320px-Albert_Park_Circuit_2020_%28simplified%29.svg.png'); }
         .race.china { background-image: url('https://flagcdn.com/w320/cn.png'); }
+        .race.china .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Shanghai_International_Circuit_2020.svg/320px-Shanghai_International_Circuit_2020.svg.png'); }
         .race.japan { background-image: url('https://flagcdn.com/w320/jp.png'); }
+        .race.japan .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Suzuka_Circuit_2020.svg/320px-Suzuka_Circuit_2020.svg.png'); }
         .race.bahrain { background-image: url('https://flagcdn.com/w320/bh.png'); }
+        .race.bahrain .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Bahrain_International_Circuit--Grand_Prix_Layout_2020.svg/320px-Bahrain_International_Circuit--Grand_Prix_Layout_2020.svg.png'); }
         .race.saudi-arabia { background-image: url('https://flagcdn.com/w320/sa.png'); }
+        .race.saudi-arabia .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Jeddah_Corniche_Circuit_2021.svg/320px-Jeddah_Corniche_Circuit_2021.svg.png'); }
         .race.miami { background-image: url('https://flagcdn.com/w320/us.png'); }
+        .race.miami .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Miami_International_Autodrome_2022.svg/320px-Miami_International_Autodrome_2022.svg.png'); }
         .race.monaco { background-image: url('https://flagcdn.com/w320/mc.png'); }
+        .race.monaco .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Circuit_de_Monaco_2020_%28simplified%29.svg/320px-Circuit_de_Monaco_2020_%28simplified%29.svg.png'); }
         .race.canada { background-image: url('https://flagcdn.com/w320/ca.png'); }
+        .race.canada .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Circuit_Gilles_Villeneuve_2020.svg/320px-Circuit_Gilles_Villeneuve_2020.svg.png'); }
         .race.abu-dhabi { background-image: url('https://flagcdn.com/w320/ae.png'); }
+        .race.abu-dhabi .map-preview { background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Yas_Marina_Circuit_2021.svg/320px-Yas_Marina_Circuit_2021.svg.png'); }
 
         /* Standings Section */
         .standings {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         .standings-table h3 {
             color: #ff0000;
-            font-size: 1.1em;
-            margin-bottom: 8px;
+            font-size: 1.2em;
+            margin-bottom: 10px;
             text-align: center;
         }
 
@@ -226,7 +280,7 @@
         }
 
         th, td {
-            padding: 6px;
+            padding: 8px;
             text-align: left;
         }
 
@@ -237,16 +291,19 @@
         .light-theme td { border-bottom: 1px solid #ccc; color: #1a1a1a; }
         .light-theme tr:nth-child(even) { background: #f5f5f5; }
 
-        td.driver:hover {
+        td.driver:hover, td.team:hover {
             color: #ffcc00;
             cursor: pointer;
         }
 
+        .trend-up::after { content: " ▲"; color: #00cc00; }
+        .trend-down::after { content: " ▼"; color: #cc0000; }
+
         /* Tech Regs Section */
         .tech-regs h3 {
             color: #ff0000;
-            font-size: 1.1em;
-            margin: 10px 0;
+            font-size: 1.2em;
+            margin: 15px 0 10px;
         }
 
         .tech-regs ul {
@@ -254,8 +311,8 @@
         }
 
         .tech-regs li {
-            padding: 5px 0;
-            font-size: 0.9em;
+            padding: 8px 0;
+            font-size: 0.95em;
         }
 
         .tech-regs li::before {
@@ -265,7 +322,7 @@
 
         /* Social Media Section */
         #social-feed {
-            padding: 10px;
+            padding: 15px;
         }
 
         /* Popup Styling */
@@ -275,12 +332,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            max-width: 300px;
+            max-width: 350px;
             text-align: center;
+            transition: opacity 0.3s;
         }
 
         .dark-theme .popup { background: #3a3a3a; color: #e0e0e0; }
@@ -288,11 +346,13 @@
 
         .popup h4 {
             color: #ff0000;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
 
         .popup.active {
             display: block;
+            opacity: 1;
         }
 
         .overlay {
@@ -304,30 +364,53 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
             z-index: 999;
+            transition: opacity 0.3s;
         }
 
         .overlay.active {
             display: block;
+            opacity: 1;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff0000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+            display: none;
+        }
+
+        .weather.loading .loader {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .dashboard-container {
-                height: auto;
-            }
-
-            .dashboard {
-                flex-direction: column;
-                overflow-x: hidden;
-            }
-
-            header {
-                height: 60px;
-            }
-
-            section {
-                min-width: 100%;
-            }
+            .dashboard-container { height: auto; }
+            .dashboard { flex-direction: column; overflow-x: hidden; }
+            header { height: 60px; }
+            section { min-width: 100%; }
+            .news-controls { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -341,9 +424,13 @@
             <!-- Latest News Section -->
             <section id="news">
                 <h2>Latest News</h2>
-                <div class="news-grid" id="news-grid">
-                    <!-- Populated by JS -->
+                <div class="news-controls">
+                    <button onclick="filterNews('all')">All</button>
+                    <button onclick="filterNews('results')">Race Results</button>
+                    <button onclick="filterNews('transfers')">Transfers</button>
+                    <button onclick="filterNews('events')">Events</button>
                 </div>
+                <div class="news-grid" id="news-grid"></div>
             </section>
 
             <!-- Race Schedule Section -->
@@ -355,63 +442,72 @@
                         <p>Australian GP</p>
                         <div class="circuit">Albert Park Circuit</div>
                         <div class="countdown" data-date="2025-03-16T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race china" data-city="Shanghai">
                         <div class="race-date">Mar 23</div>
                         <p>Chinese GP</p>
                         <div class="circuit">Shanghai International Circuit</div>
                         <div class="countdown" data-date="2025-03-23T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race japan" data-city="Suzuka">
                         <div class="race-date">Apr 6</div>
                         <p>Japanese GP</p>
                         <div class="circuit">Suzuka International Racing Course</div>
                         <div class="countdown" data-date="2025-04-06T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race bahrain" data-city="Sakhir">
                         <div class="race-date">Apr 20</div>
                         <p>Bahrain GP</p>
                         <div class="circuit">Bahrain International Circuit</div>
                         <div class="countdown" data-date="2025-04-20T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race saudi-arabia" data-city="Jeddah">
                         <div class="race-date">Apr 27</div>
                         <p>Saudi Arabian GP</p>
                         <div class="circuit">Jeddah Corniche Circuit</div>
                         <div class="countdown" data-date="2025-04-27T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race miami" data-city="Miami">
                         <div class="race-date">May 4</div>
                         <p>Miami GP</p>
                         <div class="circuit">Miami International Autodrome</div>
                         <div class="countdown" data-date="2025-05-04T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race monaco" data-city="Monaco">
                         <div class="race-date">May 25</div>
                         <p>Monaco GP</p>
                         <div class="circuit">Circuit de Monaco</div>
                         <div class="countdown" data-date="2025-05-25T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race canada" data-city="Montreal">
                         <div class="race-date">Jun 15</div>
                         <p>Canadian GP</p>
                         <div class="circuit">Circuit Gilles Villeneuve</div>
                         <div class="countdown" data-date="2025-06-15T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                     <div class="race abu-dhabi" data-city="Abu Dhabi">
                         <div class="race-date">Dec 7</div>
                         <p>Abu Dhabi GP</p>
                         <div class="circuit">Yas Marina Circuit</div>
                         <div class="countdown" data-date="2025-12-07T00:00:00Z"></div>
-                        <div class="weather"></div>
+                        <div class="weather"><div class="loader"></div></div>
+                        <div class="map-preview"></div>
                     </div>
                 </div>
                 <p style="margin-top: 10px; text-align: center;">Full 24-race calendar TBD.</p>
@@ -432,27 +528,27 @@
                             <tr>
                                 <td>1</td>
                                 <td class="driver" data-driver="verstappen">#1 Max Verstappen</td>
-                                <td>437</td>
+                                <td class="trend-up">437</td>
                             </tr>
                             <tr>
                                 <td>2</td>
                                 <td class="driver" data-driver="norris">#4 Lando Norris</td>
-                                <td>374</td>
+                                <td class="trend-up">374</td>
                             </tr>
                             <tr>
                                 <td>3</td>
                                 <td class="driver" data-driver="leclerc">#16 Charles Leclerc</td>
-                                <td>353</td>
+                                <td class="trend-down">353</td>
                             </tr>
                             <tr>
                                 <td>4</td>
                                 <td class="driver" data-driver="piastri">#81 Oscar Piastri</td>
-                                <td>270</td>
+                                <td class="trend-up">270</td>
                             </tr>
                             <tr>
                                 <td>5</td>
                                 <td class="driver" data-driver="sainz">#55 Carlos Sainz</td>
-                                <td>249</td>
+                                <td class="trend-down">249</td>
                             </tr>
                         </table>
                     </div>
@@ -466,28 +562,28 @@
                             </tr>
                             <tr>
                                 <td>1</td>
-                                <td>McLaren</td>
-                                <td>644</td>
+                                <td class="team">McLaren</td>
+                                <td class="trend-up">644</td>
                             </tr>
                             <tr>
                                 <td>2</td>
-                                <td>Ferrari</td>
-                                <td>630</td>
+                                <td class="team">Ferrari</td>
+                                <td class="trend-down">630</td>
                             </tr>
                             <tr>
                                 <td>3</td>
-                                <td>Red Bull</td>
-                                <td>589</td>
+                                <td class="team">Red Bull</td>
+                                <td class="trend-down">589</td>
                             </tr>
                             <tr>
                                 <td>4</td>
-                                <td>Mercedes</td>
-                                <td>451</td>
+                                <td class="team">Mercedes</td>
+                                <td class="trend-up">451</td>
                             </tr>
                             <tr>
                                 <td>5</td>
-                                <td>Aston Martin</td>
-                                <td>110</td>
+                                <td class="team">Aston Martin</td>
+                                <td class="trend-up">110</td>
                             </tr>
                         </table>
                     </div>
@@ -542,6 +638,9 @@
         if (localStorage.getItem('theme') === 'light') {
             body.classList.remove('dark-theme');
             body.classList.add('light-theme');
+            themeToggle.textContent = 'Dark Mode';
+        } else {
+            themeToggle.textContent = 'Light Mode';
         }
 
         themeToggle.addEventListener('click', () => {
@@ -556,31 +655,38 @@
                 localStorage.setItem('theme', 'dark');
                 themeToggle.textContent = 'Light Mode';
             }
+            document.querySelector('.twitter-timeline').setAttribute('data-theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
         });
 
-        // Mock Live News Updates
+        // Mock Live News Updates with Categories
         const newsItems = [
-            { title: "McLaren Secures 2024 Constructors' Title", text: "Lando Norris dominated the Abu Dhabi GP, clinching McLaren's first constructors' championship since 1998." },
-            { title: "Hamilton Joins Ferrari for 2025", text: "Lewis Hamilton will race for Ferrari in 2025, leaving Mercedes after a stellar career." },
-            { title: "Verstappen Wins 4th Drivers' Title", text: "Max Verstappen secured his fourth consecutive drivers' championship in 2024." },
-            { title: "F1 75 Live Event Recap", text: "The O2 hosted a spectacular launch for F1's 75th season with all 20 drivers present." }
+            { title: "McLaren Secures 2024 Constructors' Title", text: "Lando Norris dominated the Abu Dhabi GP, clinching McLaren's first constructors' championship since 1998.", category: "results" },
+            { title: "Hamilton Joins Ferrari for 2025", text: "Lewis Hamilton will race for Ferrari in 2025, leaving Mercedes after a stellar career.", category: "transfers" },
+            { title: "Verstappen Wins 4th Drivers' Title", text: "Max Verstappen secured his fourth consecutive drivers' championship in 2024.", category: "results" },
+            { title: "F1 75 Live Event Recap", text: "The O2 hosted a spectacular launch for F1's 75th season with all 20 drivers present.", category: "events" }
         ];
         let newsIndex = 0;
 
-        function updateNews() {
+        function updateNews(filter = 'all') {
             const newsGrid = document.getElementById('news-grid');
             newsGrid.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                const item = newsItems[(newsIndex + i) % newsItems.length];
+            const filteredNews = filter === 'all' ? newsItems : newsItems.filter(item => item.category === filter);
+            for (let i = 0; i < Math.min(3, filteredNews.length); i++) {
+                const item = filteredNews[(newsIndex + i) % filteredNews.length];
                 const div = document.createElement('div');
                 div.className = 'news-item';
                 div.innerHTML = `<h3>${item.title}</h3><p>${item.text}</p>`;
                 newsGrid.appendChild(div);
             }
-            newsIndex = (newsIndex + 1) % newsItems.length;
+            newsIndex = (newsIndex + 1) % filteredNews.length || 0;
         }
 
-        setInterval(updateNews, 10000);
+        function filterNews(category) {
+            newsIndex = 0; // Reset index on filter change
+            updateNews(category);
+        }
+
+        setInterval(() => updateNews(), 10000);
         updateNews();
 
         // Race Countdown Timer
@@ -606,13 +712,14 @@
         setInterval(updateCountdowns, 60000);
         updateCountdowns();
 
-        // Weather Widget (Using OpenWeatherMap API)
-        const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY'; // Replace with your free API key from openweathermap.org
+        // Weather Widget
+        const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY'; // Replace with your API key
         async function updateWeather() {
             const races = document.querySelectorAll('.race');
             for (const race of races) {
                 const city = race.getAttribute('data-city');
                 const weatherDiv = race.querySelector('.weather');
+                weatherDiv.classList.add('loading');
                 try {
                     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
                     const data = await response.json();
@@ -626,10 +733,11 @@
                 } catch (error) {
                     weatherDiv.textContent = 'Weather fetch failed';
                 }
+                weatherDiv.classList.remove('loading');
             }
         }
 
-        // Uncomment the line below after adding your API key
+        // Uncomment after adding API key
         // updateWeather();
 
         // Driver Profile Popups
