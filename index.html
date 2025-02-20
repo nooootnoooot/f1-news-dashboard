@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 News Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #ff0000;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header h1 {
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #fff;
+        }
+
+        .dashboard {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px;
+            background: #2c2c2c;
+        }
+
+        section {
+            background: #3a3a3a;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            overflow-y: auto;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: repeating-linear-gradient(
+                45deg,
+                #ff0000,
+                #ff0000 10px,
+                #fff 10px,
+                #fff 20px
+            );
+        }
+
+        h2 {
+            color: #ff0000;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* News Section */
+        .news-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .news-item {
+            background: #4a4a4a;
+            padding: 10px;
+            border-radius: 5px;
+            color: #e0e0e0;
+        }
+
+        .news-item h3 {
+            font-size: 1em;
+            color: #ff0000;
+            margin-bottom: 8px;
+        }
+
+        /* Calendar Section */
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .race {
+            background-size: cover;
+            background-position: center;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .race::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+
+        .race-date, .race p, .race .circuit {
+            position: relative;
+            z-index: 1;
+        }
+
+        .race-date {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+
+        .circuit {
+            font-size: 0.85em;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* Flag Backgrounds */
+        .race.australia { background-image: url('https://flagcdn.com/w320/au.png'); }
+        .race.china { background-image: url('https://flagcdn.com/w320/cn.png'); }
+        .race.japan { background-image: url('https://flagcdn.com/w320/jp.png'); }
+        .race.bahrain { background-image: url('https://flagcdn.com/w320/bh.png'); }
+        .race.saudi-arabia { background-image: url('https://flagcdn.com/w320/sa.png'); }
+        .race.miami { background-image: url('https://flagcdn.com/w320/us.png'); }
+        .race.monaco { background-image: url('https://flagcdn.com/w320/mc.png'); }
+        .race.canada { background-image: url('https://flagcdn.com/w320/ca.png'); }
+        .race.abu-dhabi { background-image: url('https://flagcdn.com/w320/ae.png'); }
+
+        /* Standings Section */
+        .standings {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .standings-table h3 {
+            color: #ff0000;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #e0e0e0;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+            border-bottom: 1px solid #555;
+        }
+
+        th {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #444;
+        }
+
+        /* Tech Regs Section */
+        .tech-regs {
+            color: #e0e0e0;
+        }
+
+        .tech-regs h3 {
+            color: #ff0000;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .tech-regs ul {
+            list-style-type: none;
+        }
+
+        .tech-regs li {
+            padding: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .tech-regs li::before {
+            content: "🏎️ ";
+            margin-right: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                height: auto;
+            }
+
+            .dashboard {
+                flex-direction: column;
+                overflow-x: hidden;
+            }
+
+            header {
+                height: 60px;
+            }
+
+            section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>F1 News Dashboard - Feb 20, 2025</h1>
+        </header>
+        <div class="dashboard">
+            <!-- Latest News Section -->
+            <section id="news">
+                <h2>Latest News</h2>
+                <div class="news-grid">
+                    <div class="news-item">
+                        <h3>McLaren Secures 2024 Constructors' Title</h3>
+                        <p>Lando Norris dominated the Abu Dhabi GP, clinching McLaren's first constructors' championship since 1998.</p>
+                    </div>
+                    <div class="news-item">
+                        <h3>Hamilton Joins Ferrari for 2025</h3>
+                        <p>Lewis Hamilton will race for Ferrari in 2025, leaving Mercedes after a stellar career.</p>
+                    </div>
+                    <div class="news-item">
+                        <h3>Verstappen Wins 4th Drivers' Title</h3>
+                        <p>Max Verstappen secured his fourth consecutive drivers' championship in 2024.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Race Schedule Section -->
+            <section id="schedule">
+                <h2>2025 Race Schedule</h2>
+                <div class="calendar">
+                    <div class="race australia">
+                        <div class="race-date">Mar 16</div>
+                        <p>Australian GP</p>
+                        <div class="circuit">Albert Park Circuit</div>
+                    </div>
+                    <div class="race china">
+                        <div class="race-date">Mar 23</div>
+                        <p>Chinese GP</p>
+                        <div class="circuit">Shanghai International Circuit</div>
+                    </div>
+                    <div class="race japan">
+                        <div class="race-date">Apr 6</div>
+                        <p>Japanese GP</p>
+                        <div class="circuit">Suzuka International Racing Course</div>
+                    </div>
+                    <div class="race bahrain">
+                        <div class="race-date">Apr 20</div>
+                        <p>Bahrain GP</p>
+                        <div class="circuit">Bahrain International Circuit</div>
+                    </div>
+                    <div class="race saudi-arabia">
+                        <div class="race-date">Apr 27</div>
+                        <p>Saudi Arabian GP</p>
+                        <div class="circuit">Jeddah Corniche Circuit</div>
+                    </div>
+                    <div class="race miami">
+                        <div class="race-date">May 4</div>
+                        <p>Miami GP</p>
+                        <div class="circuit">Miami International Autodrome</div>
+                    </div>
+                    <div class="race monaco">
+                        <div class="race-date">May 25</div>
+                        <p>Monaco GP</p>
+                        <div class="circuit">Circuit de Monaco</div>
+                    </div>
+                    <div class="race canada">
+                        <div class="race-date">Jun 15</div>
+                        <p>Canadian GP</p>
+                        <div class="circuit">Circuit Gilles Villeneuve</div>
+                    </div>
+                    <div class="race abu-dhabi">
+                        <div class="race-date">Dec 7</div>
+                        <p>Abu Dhabi GP</p>
+                        <div class="circuit">Yas Marina Circuit</div>
+                    </div>
+                </div>
+                <p style="color: #e0e0e0; margin-top: 10px; text-align: center;">Full 24-race calendar TBD.</p>
+            </section>
+
+            <!-- Standings Section -->
+            <section id="standings">
+                <h2>Current Standings (2024 Final)</h2>
+                <div class="standings">
+                    <div class="standings-table">
+                        <h3>Drivers</h3>
+                        <table>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Driver</th>
+                                <th>Pts</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>#1 Max Verstappen</td>
+                                <td>437</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>#4 Lando Norris</td>
+                                <td>374</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>#16 Charles Leclerc</td>
+                                <td>353</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>#81 Oscar Piastri</td>
+                                <td>270</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>#55 Carlos Sainz</td>
+                                <td>249</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="standings-table">
+                        <h3>Constructors</h3>
+                        <table>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>Pts</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>McLaren</td>
+                                <td>644</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Ferrari</td>
+                                <td>630</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Red Bull</td>
+                                <td>589</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Mercedes</td>
+                                <td>451</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Aston Martin</td>
+                                <td>110</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Regulations Section -->
+            <section id="tech-regs">
+                <h2>2025 Regulations</h2>
+                <div class="tech-regs">
+                    <h3>Technical Regulations</h3>
+                    <ul>
+                        <li><strong>Power Unit Freeze Continues:</strong> Engine development remains frozen until 2026, focusing on reliability and cost control.</li>
+                        <li><strong>Aero Adjustments:</strong> Minor tweaks to front and rear wings to improve overtaking, maintaining 2022 ground-effect rules.</li>
+                        <li><strong>Weight Reduction:</strong> Minimum car weight reduced by 10kg to 788kg (including driver) for better agility.</li>
+                        <li><strong>Sustainable Fuels:</strong> Increased use of sustainable fuels, targeting 100% sustainable by 2026, with 2025 as a transition year.</li>
+                        <li><strong>Cost Cap Tightening:</strong> Stricter enforcement of $135M cost cap, with audits to prevent loopholes.</li>
+                    </ul>
+                    <h3>Safety Regulations</h3>
+                    <ul>
+                        <li><strong>Enhanced Cockpit Protection:</strong> Strengthened side intrusion panels and halo structure after 2024 crash data analysis.</li>
+                        <li><strong>Roll Hoop Redesign:</strong> Taller and wider roll hoops mandated following Zhou Guanyu’s 2022 incident, improving rollover safety.</li>
+                        <li><strong>Rear Wing Lights:</strong> Brighter, mandatory rain lights on rear wings for better visibility in low-light conditions.</li>
+                        <li><strong>Wheel Tethers:</strong> Upgraded tether strength to reduce debris risk, addressing 2024 loose wheel incidents.</li>
+                        <li><strong>Helmet Standards:</strong> New FIA helmet spec with improved impact resistance and ventilation for driver comfort.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
